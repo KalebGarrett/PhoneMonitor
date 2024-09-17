@@ -61,7 +61,7 @@ namespace OnnxObjectDetectionApp
             }
             else // Otherwise default to Tiny Yolo Onnx model
             {
-                var tinyYoloModel = new TinyYoloModel(Path.Combine(modelsDirectory, "TinyYolo2_model.onnx"));
+                var tinyYoloModel = new TinyYoloModel(Path.Combine(modelsDirectory, "TinyYolo2_model.onnx")); // Change to my onnx model
                 var modelConfigurator = new OnnxModelConfigurator(tinyYoloModel);
 
                 outputParser = new OnnxOutputParser(tinyYoloModel);

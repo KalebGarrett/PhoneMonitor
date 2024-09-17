@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OnnxObjectDetectionApp"
         mc:Ignorable="d"
-        Title="ML.NET Object Detection (Onnx)" Height="506" Width="640">
+        Title="Phone Detection App" Height="506" Width="640">
     <Grid Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

@@ -16,4 +16,11 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="ML\OnnxModels\PhoneMonitorModel.ONNX.zip" />
+    <Content Include="ML\OnnxModels\PhoneMonitorModel.ONNX.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
