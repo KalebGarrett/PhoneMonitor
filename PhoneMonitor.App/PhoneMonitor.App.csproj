@@ -4,7 +4,8 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
-    <RootNamespace>OnnxObjectDetectionApp</RootNamespace>
+    <RootNamespace>PhoneMonitor.App</RootNamespace>
+    <AssemblyName>Phone Monitor</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +13,7 @@
     <PackageReference Include="Microsoft.ML.ImageAnalytics" Version="1.7.0" />
     <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.10.0" />
     <PackageReference Include="Microsoft.ML.OnnxTransformer" Version="1.7.0" />
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
     <PackageReference Include="OpenCvSharp4.Windows" Version="4.5.5.20211231" />
   </ItemGroup>

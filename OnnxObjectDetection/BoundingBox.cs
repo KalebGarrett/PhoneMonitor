@@ -29,8 +29,8 @@ namespace OnnxObjectDetection
 
         private static readonly Color[] classColors = new Color[]
         {
-            Color.Khaki, Color.Fuchsia, Color.Silver, Color.RoyalBlue,
-            Color.Green, Color.DarkOrange, Color.Purple, Color.Gold,
+            Color.Green, Color.RoyalBlue, Color.Silver, Color.Fuchsia,
+            Color.Khaki, Color.DarkOrange, Color.Purple, Color.Gold,
             Color.Red, Color.Aquamarine, Color.Lime, Color.AliceBlue,
             Color.Sienna, Color.Orchid, Color.Tan, Color.LightPink,
             Color.Yellow, Color.HotPink, Color.OliveDrab, Color.SandyBrown,

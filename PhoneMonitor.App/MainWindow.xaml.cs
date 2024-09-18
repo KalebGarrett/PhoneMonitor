@@ -1,7 +1,4 @@
-﻿using Microsoft.ML;
-using OnnxObjectDetection;
-using OpenCvSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -12,9 +9,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.ML;
+using OnnxObjectDetection;
+using OpenCvSharp;
+using PhoneMonitor.App.Services;
 using Rectangle = System.Windows.Shapes.Rectangle;
 
-namespace OnnxObjectDetectionApp
+namespace PhoneMonitor.App
 {
     public partial class MainWindow : System.Windows.Window
     {
@@ -26,11 +27,15 @@ namespace OnnxObjectDetectionApp
         private PredictionEngine<ImageInputData, CustomVisionPrediction> customVisionPredictionEngine;
 
         private static readonly string modelsDirectory = Path.Combine(Environment.CurrentDirectory, @"ML\OnnxModels");
+        
+        private ToastService ToastService { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
             LoadModel();
+            ToastService = new ToastService();
+            ToastService.SendPushNotification();
         }
 
         protected override void OnActivated(EventArgs e)
@@ -45,6 +50,7 @@ namespace OnnxObjectDetectionApp
             StopCameraCapture();
         }
 
+        // Remove other model from project
         private void LoadModel()
         {
             // Check for an Onnx model exported from Custom Vision
@@ -61,7 +67,7 @@ namespace OnnxObjectDetectionApp
             }
             else // Otherwise default to Tiny Yolo Onnx model
             {
-                var tinyYoloModel = new TinyYoloModel(Path.Combine(modelsDirectory, "TinyYolo2_model.onnx")); // Change to my onnx model
+                var tinyYoloModel = new TinyYoloModel(Path.Combine(modelsDirectory, "TinyYolo2_model.onnx"));
                 var modelConfigurator = new OnnxModelConfigurator(tinyYoloModel);
 
                 outputParser = new OnnxOutputParser(tinyYoloModel);
@@ -127,10 +133,13 @@ namespace OnnxObjectDetectionApp
                 });
             }
         }
-
+        
         public List<BoundingBox> DetectObjectsUsingModel(ImageInputData imageInputData)
         {
             var labels = customVisionPredictionEngine?.Predict(imageInputData).PredictedLabels ?? tinyYoloPredictionEngine?.Predict(imageInputData).PredictedLabels;
+
+            // Add prediction condition here
+            
             var boundingBoxes = outputParser.ParseOutputs(labels);
             var filteredBoxes = outputParser.FilterBoundingBoxes(boundingBoxes, 5, 0.5f);
             return filteredBoxes;
