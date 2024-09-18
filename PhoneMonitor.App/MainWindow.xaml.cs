@@ -27,15 +27,13 @@ namespace PhoneMonitor.App
         private PredictionEngine<ImageInputData, CustomVisionPrediction> customVisionPredictionEngine;
 
         private static readonly string modelsDirectory = Path.Combine(Environment.CurrentDirectory, @"ML\OnnxModels");
-        
+
         private ToastService ToastService { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
             LoadModel();
-            ToastService = new ToastService();
-            ToastService.SendPushNotification();
         }
 
         protected override void OnActivated(EventArgs e)
@@ -78,7 +76,8 @@ namespace PhoneMonitor.App
         private void StartCameraCapture()
         {
             cameraCaptureCancellationTokenSource = new CancellationTokenSource();
-            Task.Run(() => CaptureCamera(cameraCaptureCancellationTokenSource.Token), cameraCaptureCancellationTokenSource.Token) ;
+            Task.Run(() => CaptureCamera(cameraCaptureCancellationTokenSource.Token),
+                cameraCaptureCancellationTokenSource.Token);
         }
 
         private void StopCameraCapture() => cameraCaptureCancellationTokenSource?.Cancel();
@@ -88,7 +87,7 @@ namespace PhoneMonitor.App
             if (capture == null)
                 capture = new VideoCapture();
 
-            capture.Open(0, apiPreference:VideoCaptureAPIs.DSHOW);
+            capture.Open(0, apiPreference: VideoCaptureAPIs.DSHOW);
 
             if (capture.IsOpened())
             {
@@ -122,8 +121,17 @@ namespace PhoneMonitor.App
             if (customVisionPredictionEngine == null && tinyYoloPredictionEngine == null)
                 return;
 
-            var frame = new ImageInputData { Image = bitmap };
+            var frame = new ImageInputData {Image = bitmap};
             var filteredBoxes = DetectObjectsUsingModel(frame);
+
+            foreach (var box in filteredBoxes)
+            {
+                if (box.Label == "phone")
+                {
+                    ToastService = new ToastService();
+                    ToastService.SendPushNotification();
+                }
+            }
 
             if (!token.IsCancellationRequested)
             {
@@ -133,18 +141,17 @@ namespace PhoneMonitor.App
                 });
             }
         }
-        
+
         public List<BoundingBox> DetectObjectsUsingModel(ImageInputData imageInputData)
         {
-            var labels = customVisionPredictionEngine?.Predict(imageInputData).PredictedLabels ?? tinyYoloPredictionEngine?.Predict(imageInputData).PredictedLabels;
+            var labels = customVisionPredictionEngine?.Predict(imageInputData).PredictedLabels ??
+                         tinyYoloPredictionEngine?.Predict(imageInputData).PredictedLabels;
 
-            // Add prediction condition here
-            
             var boundingBoxes = outputParser.ParseOutputs(labels);
             var filteredBoxes = outputParser.FilterBoundingBoxes(boundingBoxes, 5, 0.5f);
             return filteredBoxes;
         }
-        
+
         private void DrawOverlays(List<BoundingBox> filteredBoxes, double originalHeight, double originalWidth)
         {
             WebCamCanvas.Children.Clear();
