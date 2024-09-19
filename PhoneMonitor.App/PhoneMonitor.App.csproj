@@ -22,4 +22,11 @@
     <ProjectReference Include="..\OnnxObjectDetection\OnnxObjectDetection.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Images\finger-shake-judge-judy.gif" />
+    <Content Include="Images\finger-shake-judge-judy.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
