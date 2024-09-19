@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -26,11 +27,13 @@ namespace PhoneMonitor.App
         private PredictionEngine<ImageInputData, CustomVisionPrediction> customVisionPredictionEngine;
         private static readonly string modelsDirectory = Path.Combine(Environment.CurrentDirectory, @"ML\OnnxModels");
         private ToastService ToastService { get; set; }
+        private Stopwatch Stopwatch { get; set; } = new Stopwatch();
 
         public MainWindow()
         {
             InitializeComponent();
             LoadModel();
+            Stopwatch.Start();
         }
 
         protected override void OnActivated(EventArgs e)
@@ -44,11 +47,11 @@ namespace PhoneMonitor.App
             base.OnClosing(e);
             StopCameraCapture();
         }
-        
+
         private void LoadModel()
         {
             var customVisionExport = Directory.GetFiles(modelsDirectory, "*.zip").FirstOrDefault();
-            
+
             if (customVisionExport != null)
             {
                 var customVisionModel = new CustomVisionModel(customVisionExport);
@@ -57,7 +60,7 @@ namespace PhoneMonitor.App
                 outputParser = new OnnxOutputParser(customVisionModel);
                 customVisionPredictionEngine = modelConfigurator.GetMlNetPredictionEngine<CustomVisionPrediction>();
             }
-            else 
+            else
             {
                 var tinyYoloModel = new TinyYoloModel(Path.Combine(modelsDirectory, "TinyYolo2_model.onnx"));
                 var modelConfigurator = new OnnxModelConfigurator(tinyYoloModel);
@@ -120,10 +123,12 @@ namespace PhoneMonitor.App
 
             foreach (var box in filteredBoxes)
             {
-                if (box.Label == "phone")
+                if (box.Label == "phone" && Stopwatch.Elapsed.Seconds >= 10)
                 {
                     ToastService = new ToastService();
                     ToastService.SendPushNotification();
+              
+                    Stopwatch.Restart();
                 }
             }
 
