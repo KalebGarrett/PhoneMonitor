@@ -17,17 +17,14 @@ using Rectangle = System.Windows.Shapes.Rectangle;
 
 namespace PhoneMonitor.App
 {
-    public partial class MainWindow : System.Windows.Window
+    public partial class MainWindow
     {
         private VideoCapture capture;
         private CancellationTokenSource cameraCaptureCancellationTokenSource;
-
         private OnnxOutputParser outputParser;
         private PredictionEngine<ImageInputData, TinyYoloPrediction> tinyYoloPredictionEngine;
         private PredictionEngine<ImageInputData, CustomVisionPrediction> customVisionPredictionEngine;
-
         private static readonly string modelsDirectory = Path.Combine(Environment.CurrentDirectory, @"ML\OnnxModels");
-
         private ToastService ToastService { get; set; }
 
         public MainWindow()
@@ -42,19 +39,16 @@ namespace PhoneMonitor.App
             StartCameraCapture();
         }
 
-        protected override void OnDeactivated(EventArgs e)
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            base.OnDeactivated(e);
+            base.OnClosing(e);
             StopCameraCapture();
         }
-
-        // Remove other model from project
+        
         private void LoadModel()
         {
-            // Check for an Onnx model exported from Custom Vision
             var customVisionExport = Directory.GetFiles(modelsDirectory, "*.zip").FirstOrDefault();
-
-            // If there is one, use it.
+            
             if (customVisionExport != null)
             {
                 var customVisionModel = new CustomVisionModel(customVisionExport);
@@ -63,7 +57,7 @@ namespace PhoneMonitor.App
                 outputParser = new OnnxOutputParser(customVisionModel);
                 customVisionPredictionEngine = modelConfigurator.GetMlNetPredictionEngine<CustomVisionPrediction>();
             }
-            else // Otherwise default to Tiny Yolo Onnx model
+            else 
             {
                 var tinyYoloModel = new TinyYoloModel(Path.Combine(modelsDirectory, "TinyYolo2_model.onnx"));
                 var modelConfigurator = new OnnxModelConfigurator(tinyYoloModel);
@@ -158,13 +152,11 @@ namespace PhoneMonitor.App
 
             foreach (var box in filteredBoxes)
             {
-                // process output boxes
                 double x = Math.Max(box.Dimensions.X, 0);
                 double y = Math.Max(box.Dimensions.Y, 0);
                 double width = Math.Min(originalWidth - x, box.Dimensions.Width);
                 double height = Math.Min(originalHeight - y, box.Dimensions.Height);
 
-                // fit to current image size
                 x = originalWidth * x / ImageSettings.imageWidth;
                 y = originalHeight * y / ImageSettings.imageHeight;
                 width = originalWidth * width / ImageSettings.imageWidth;
