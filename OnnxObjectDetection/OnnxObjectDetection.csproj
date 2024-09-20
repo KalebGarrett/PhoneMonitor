@@ -14,13 +14,9 @@
     <None Update="ML\OnnxModels\TinyYolo2_model.onnx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="ML\OnnxModels\PhoneMonitorModel.ONNX.zip" />
-    <Content Include="ML\OnnxModels\PhoneMonitorModel.ONNX.zip">
+    <None Update="ML\OnnxModels\PhoneMonitorModel_v1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
 
 </Project>

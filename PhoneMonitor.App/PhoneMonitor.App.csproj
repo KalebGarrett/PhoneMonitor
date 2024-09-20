@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>PhoneMonitor.App</RootNamespace>
     <AssemblyName>Phone Monitor</AssemblyName>
+    <ApplicationIcon>Images\Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
